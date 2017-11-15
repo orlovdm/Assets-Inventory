@@ -1,0 +1,47 @@
+﻿@model Assets_Inventory.Models.Asset
+
+<div class="modal-content">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="AssetLabel">Новый объект основных средств</h4>
+        </div>
+
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.Id);
+            <div class="form-group">
+                @Html.LabelFor(m => m.Inv_id, "Инвентарный номер:")
+                @Html.TextBoxFor(m => m.Inv_id, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AssetTypeId, "Тип:")
+                @Html.DropDownListFor(m => m.AssetTypeId, ViewBag.Types as SelectList, new { @class = "form-conrtol" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Brand, "Производитель:")
+                @Html.TextBoxFor(m => m.Brand, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Model, "Модель:")
+                @Html.TextBoxFor(m => m.Model, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Netw_name, "Имя в локальной сети:")
+                @Html.TextBoxFor(m => m.Netw_name, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.Label("Комментарий:")
+                @Html.TextArea("Notes", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div class="form-group">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                <button type="submit" class="btn btn-primary" form="AddAssetForm">Сохранить</button>
+            </div>
+        </div>
+    }
+</div>
