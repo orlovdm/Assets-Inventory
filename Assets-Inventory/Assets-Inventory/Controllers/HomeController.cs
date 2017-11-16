@@ -1,9 +1,7 @@
 ﻿using Assets_Inventory.Models;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Assets_Inventory.Controllers
@@ -68,7 +66,7 @@ namespace Assets_Inventory.Controllers
             {
                 SelectList types = new SelectList(db.AssetTypes.Where(t => t.Active), "Id", "Name");
                 ViewBag.Types = types;
-                return PartialView("Edit");
+                return PartialView("Edit", asset);
             }
             return HttpNotFound();
         }

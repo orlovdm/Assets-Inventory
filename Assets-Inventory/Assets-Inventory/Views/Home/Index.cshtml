@@ -4,8 +4,8 @@
     ViewBag.Title = "Asset Inventory";
 }
 
-<div id="modalDialod" class="modal fade" role="dialog" aria-labelledby="AssetLabel">
-    <div id="dialogContent" class="modal-dialog modal" role="document"></div>
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
 </div>
 
 <div class="row">
@@ -30,47 +30,35 @@
                 <td>
                     <div class="btn-toolbar">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddLocation" data-whatever="@Html.DisplayFor(m => item.Id)">
-                                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-                            </button>
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddConnection" data-whatever="@Html.DisplayFor(m => item.Id)">
-                                <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
-                            </button>
+                            <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></a>
                         </div>
 
                         <div class="btn-group">
-                            @Html.ActionLink("<span class=\"glyphicon glyphicon-edit\" aria-hidden=\"true\"></span>", "Edit", new { id = item.Id }, new { @class = "btn btn-success" })
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#DeleteAsset" data-whatever="@Html.DisplayFor(m => item.Id)">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </button>
+                            <a href="@Url.Action("Edit", "Home", new { id = item.Id })" class="btn btn-success"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                         </div>
                     </div>
                 </td>
             </tr>
         }
     </table>
-    <p>@Html.ActionLink("Добавить", "Create", null, new { @class = "btn btn-primary", id = "Create" })</p>
+    <p><a href="@Url.Action("Create", "Home")" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></p>
 </div>
 
-@section scripts 
+@section scripts
 {
     <script>
         $(function () {
             $.ajaxSetup({ cache: false });
             $(".btn").click(function (e) {
+
                 e.preventDefault();
-
-                $('#dialogContent').load(this.href, function () {
-                    $('modalDialog').modal({
-                        keyboard: true
-                    }, 'show');
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
                 });
-
-                //$.get(this.href, function (data) {
-                //    $("#dialogContent").html(data);
-                //    $("#modalDialog").modal('show');
-                //});
             });
-        });
+        })
     </script>
 }
