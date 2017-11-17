@@ -48,7 +48,7 @@ namespace Assets_Inventory.Controllers
                 db.ActionLogs.Add(aLog);
                 db.SaveChanges();
             }
-            ViewBag.Error = "Не удалось создать запись в базе данных!";
+            //ViewBag.Error = "Не удалось создать запись в базе данных!";
             return RedirectToAction("Index");
         }
 
@@ -73,14 +73,159 @@ namespace Assets_Inventory.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Asset asset)
+        public ActionResult Edit(int id)
         {
+            Asset asset = db.Assets.Find(id);
             if (ModelState.IsValid)
             {
                 db.Entry(asset).State = EntityState.Modified;
+
+                ActionLog aLog = new ActionLog
+                {
+                    Action = "Edit",
+                    AssetId = asset.Id,
+                    UserName = User.Identity.Name,
+                    Notes = Request.Form["Notes"] //TODO: Проверить значение
+                };
+
+                db.ActionLogs.Add(aLog);
                 db.SaveChanges();
             }
-            ViewBag.Error = "Не удалось изменить запись в базе данных!";
+            
+            //ViewBag.Error = "Не удалось изменить запись в базе данных!";
+            return RedirectToAction("Index");
+        }
+
+        // Удаление. При вызове этого действия происходит изменение флага 'Active' в таблице 'Assets' на false 
+        // и соответствующая запись в журнале 'ActionLog'
+        [HttpGet]
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Asset asset = db.Assets.Find(id);
+            if (asset != null)
+            {
+                return PartialView("Delete", asset);
+            }
+            return HttpNotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id)
+        {
+            Asset asset = db.Assets.Find(id);
+            if (ModelState.IsValid)
+            {
+                asset.Active = false;
+                asset.Location = null;
+                asset.Connection = null;
+                asset.Netw_name = null;
+
+                db.Entry(asset).State = EntityState.Modified;
+
+                ActionLog aLog = new ActionLog
+                {
+                    Action = "Delete",
+                    AssetId = asset.Id,
+                    UserName = User.Identity.Name,
+                    Notes = Request.Form["Notes"] //TODO: Проверить значение
+                };
+
+                db.ActionLogs.Add(aLog);
+                db.SaveChanges();
+            }
+            //ViewBag.Error = "Не удалось изменить запись " + asset.Id.ToString() + " в базе данных!";
+            return RedirectToAction("Index");
+        }
+
+        // Расположение
+        [HttpGet]
+        public ActionResult Location(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Asset asset = db.Assets.Find(id);
+            if (asset != null)
+            {
+                return PartialView("Location", asset);
+            }
+
+            return HttpNotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Location(int id)
+        {
+            Asset asset = db.Assets.Find(id);
+            if (ModelState.IsValid)
+            {
+                db.Entry(asset).State = EntityState.Modified;
+                asset.Location = Request.Form["Location"];
+
+                LocationLog locLog = new LocationLog
+                {
+                    Location = asset.Location,
+                    AssetId = asset.Id,
+                    UserName = User.Identity.Name,
+                    Notes = Request.Form["Notes"] //TODO: Проверить значение
+                };
+
+                db.LocationLogs.Add(locLog);
+                db.SaveChanges();
+            }            
+            return RedirectToAction("Index");
+        }
+
+        // Подключения
+        [HttpGet]
+        public ActionResult Connect(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Asset asset = db.Assets.Find(id);
+            if (asset != null && asset.AssetTypeId != 1) // AssetTypeId = 1 это компьютер. Компьютер нкчему не подключаем.
+            {
+                SelectList comps = new SelectList(db.Assets.Where(t => t.AssetTypeId == 1).Where(a => a.Active), "Inv_Id", "Inv_Id");
+                ViewBag.Comps = comps;
+
+                return PartialView("Connect", asset);
+            }
+            return HttpNotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Connect(int id)
+        {
+            Asset asset = db.Assets.Find(id);
+            if (ModelState.IsValid)
+            {
+                asset.Connection = Request.Form["Connection"]; //TODO: Проверить значение
+                db.Entry(asset).State = EntityState.Modified;
+
+                ConnectionLog cLog = new ConnectionLog
+                {
+                    AssetId = asset.Id,
+                    ConnectTo = asset.Connection,
+                    UserName = User.Identity.Name,
+                    Notes = Request.Form["Notes"] //TODO: Проверить значение
+                };
+
+                db.ConnectionLogs.Add(cLog);
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 

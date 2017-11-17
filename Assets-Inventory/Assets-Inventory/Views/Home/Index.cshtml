@@ -4,9 +4,25 @@
     ViewBag.Title = "Asset Inventory";
 }
 
+@helper ConnectButton(Assets_Inventory.Models.Asset asset)
+{
+if (asset.AssetTypeId != 1) {
+        <a href="@Url.Action("Connect", "Home", new { id = asset.Id })" class="btn btn-success"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></a>
+} else {
+        <a href="@Url.Action("Connect", "Home", new { id = asset.Id })" class="btn btn-success disabled"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></a>
+}}
+
 <div id="modDialog" class="modal fade">
     <div id="dialogContent" class="modal-dialog"></div>
 </div>
+
+@if (!string.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="alert alert-danger" alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Error!</strong> @ViewBag.Error
+    </div>
+}
 
 <div class="row">
     <h2 class="page-header">Active Assets</h2>
@@ -30,13 +46,13 @@
                 <td>
                     <div class="btn-toolbar">
                         <div class="btn-group">
-                            <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></a>
-                            <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></a>
+                            <a href="@Url.Action("Location", "Home", new { id = item.Id })" class="btn btn-success"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></a>
+                            @ConnectButton(item)
                         </div>
 
                         <div class="btn-group">
                             <a href="@Url.Action("Edit", "Home", new { id = item.Id })" class="btn btn-success"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-                            <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                            <a href="@Url.Action("Delete", "Home", new { id = item.Id })" class="btn btn-success"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                         </div>
                     </div>
                 </td>
