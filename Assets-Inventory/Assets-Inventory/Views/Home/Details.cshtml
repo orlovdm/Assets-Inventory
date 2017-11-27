@@ -1,0 +1,114 @@
+﻿@model Assets_Inventory.Models.Asset
+@{
+    ViewBag.Title = Model.Inv_id + " - Подробно";
+}
+
+<div class="row">
+    <h2 class="page-header">@ViewBag.Title</h2>
+    <dl class="dl-horizontal">
+        <dt>Категория</dt>
+        <dd>@Model.AssetType.Name</dd>
+
+        <dt>Инвентарный №</dt>
+        <dd>@Model.Inv_id</dd>
+
+        <dt>Производитель</dt>
+        <dd>@Model.Brand</dd>
+
+        <dt>Модель</dt>
+        <dd>@Model.Model</dd>
+
+        <dt>Имя в локальной сети</dt>
+        <dd>@Model.Netw_name</dd>
+
+        <dt>Расположение</dt>
+        <dd>@Model.Location</dd>
+
+        <dt>Дата создания</dt>
+        <dd>@Model.CreateDate</dd>
+    </dl>
+</div>
+<div class="row">
+    <h3>Подключения</h3>
+    <dl class="dl-horizontal">
+        <dt>Подключенные объекты</dt>
+        <dd>@ViewBag.Connections</dd>
+
+        <dt>Подключен к</dt>
+        <dd>@Model.Connection</dd>
+    </dl>
+</div>
+<div class="row">
+    <table class="table table-striped">
+        @foreach (Assets_Inventory.Models.ConnectionLog cl in ViewBag.ConnectionsTmp)
+        {
+            <tr>
+                <td>@cl.Timestamp</td>
+                <td>@cl.AssetId</td>
+                <td>@cl.ConnectTo</td>
+                <td>@cl.UserName</td>
+                <td>@cl.Notes</td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="row">
+    <h3>История подключений</h3>
+    <table class="table table-condensed">
+        <tr>
+            <th>Дата</th>
+            <th>Подключен к</th>
+            <th>Кто изменил</th>
+            <th>Заметки</th>
+        </tr>
+        @foreach (Assets_Inventory.Models.ConnectionLog cLog in ViewBag.HystoryConnections)
+        {
+            <tr>
+                <td>@cLog.Timestamp</td>
+                <td>@cLog.ConnectTo</td>
+                <td>@cLog.UserName</td>
+                <td>@cLog.Notes</td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="row">
+    <h3>История перемещений</h3>
+    <table class="table table-condensed">
+        <tr>
+            <th>Дата</th>
+            <th>Расположение</th>
+            <th>Кто изменил</th>
+            <th>Заметки</th>
+        </tr>
+        @foreach (Assets_Inventory.Models.LocationLog lLog in ViewBag.HystoryLocations)
+        {
+            <tr>
+                <td>@lLog.Timestamp</td>
+                <td>@lLog.Location</td>
+                <td>@lLog.UserName</td>
+                <td>@lLog.Notes</td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="row">
+    <h3>История операций</h3>
+    <table class="table table-condensed">
+        <tr>
+            <th>Дата</th>
+            <th>Действие</th>
+            <th>Кто изменил</th>
+            <th>Заметки</th>
+        </tr>
+        @foreach (Assets_Inventory.Models.ActionLog aLog in ViewBag.HystoryActions)
+        {
+            <tr>
+                <td>@aLog.Timestamp</td>
+                <td>@aLog.Action</td>
+                <td>@aLog.UserName</td>
+                <td>@aLog.Notes</td>
+            </tr>
+        }
+    </table>
+</div>

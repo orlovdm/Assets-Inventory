@@ -229,6 +229,57 @@ namespace Assets_Inventory.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Asset asset = db.Assets.Find(id);
+            if (asset == null)
+            {
+                HttpNotFound();
+            }
+
+            string allConnections = "";
+
+            //История перемещений
+            IEnumerable<LocationLog> lLog = db.LocationLogs
+                .Where(a => a.AssetId == asset.Id)
+                .OrderByDescending(t => t.Timestamp);
+            ViewBag.HystoryLocations = lLog;
+
+            //История Подключений
+            IEnumerable<ConnectionLog> cLog = db.ConnectionLogs
+                .Where(a => a.AssetId == asset.Id)
+                .OrderByDescending(t => t.Timestamp);
+            ViewBag.HystoryConnections = cLog;
+
+            //История операций
+            IEnumerable<ActionLog> aLog = db.ActionLogs
+                .Where(a => a.AssetId == asset.Id)
+                .OrderByDescending(t => t.Timestamp);
+            ViewBag.HystoryActions = aLog;
+
+            //Подключения
+            //Получаем коллекцию записей журнала подключений, где указано подключение к текущему объекту 
+            IEnumerable<ConnectionLog> conections = db.ConnectionLogs.Where(a => a.ConnectTo == asset.Inv_id);
+            ViewBag.ConnectionsTmp = conections;
+
+            //Берем из коллекции инвентарные номера только тех объектов, которые подключены к текущему в данный момент
+            foreach (ConnectionLog cl in conections)
+            {
+                if (cl.Asset.Connection == cl.ConnectTo)
+                {
+                    allConnections += cl.Asset.Inv_id + ", ";
+                }
+            }
+            ViewBag.Connections = allConnections.TrimEnd(' ').TrimEnd(',');
+            IEnumerable<ConnectionLog> conLog = asset.ConnectionLog;
+            return View(asset);
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

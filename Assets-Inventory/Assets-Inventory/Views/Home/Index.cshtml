@@ -38,7 +38,7 @@ if (asset.AssetTypeId != 1) {
         @foreach (Assets_Inventory.Models.Asset item in ViewBag.Assets)
         {
             <tr>
-                <td>@Html.DisplayFor(m => item.Inv_id)</td>
+                <td>@Html.ActionLink(item.Inv_id, "Details", new { id = item.Id })</td>
                 <td>@Html.DisplayFor(m => item.Brand)</td>
                 <td>@Html.DisplayFor(m => item.Model)</td>
                 <td>@Html.DisplayFor(m => item.Netw_name)</td>

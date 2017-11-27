@@ -172,6 +172,7 @@
     <Content Include="Views\Home\Delete.cshtml" />
     <Content Include="Views\Home\Location.cshtml" />
     <Content Include="Views\Home\Connect.cshtml" />
+    <Content Include="Views\Home\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
