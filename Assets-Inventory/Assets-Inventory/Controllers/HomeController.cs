@@ -1,4 +1,5 @@
 ﻿using Assets_Inventory.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -247,13 +248,15 @@ namespace Assets_Inventory.Controllers
             //История перемещений
             IEnumerable<LocationLog> lLog = db.LocationLogs
                 .Where(a => a.AssetId == asset.Id)
-                .OrderByDescending(t => t.Timestamp);
+                .OrderByDescending(t => t.Timestamp)
+                .Take(5);
             ViewBag.HystoryLocations = lLog;
 
             //История Подключений
             IEnumerable<ConnectionLog> cLog = db.ConnectionLogs
                 .Where(a => a.AssetId == asset.Id)
-                .OrderByDescending(t => t.Timestamp);
+                .OrderByDescending(t => t.Timestamp)
+                .Take(5);
             ViewBag.HystoryConnections = cLog;
 
             //История операций
@@ -263,20 +266,12 @@ namespace Assets_Inventory.Controllers
             ViewBag.HystoryActions = aLog;
 
             //Подключения
-            //Получаем коллекцию записей журнала подключений, где указано подключение к текущему объекту 
-            IEnumerable<ConnectionLog> conections = db.ConnectionLogs.Where(a => a.ConnectTo == asset.Inv_id);
-            ViewBag.ConnectionsTmp = conections;
-
-            //Берем из коллекции инвентарные номера только тех объектов, которые подключены к текущему в данный момент
-            foreach (ConnectionLog cl in conections)
-            {
-                if (cl.Asset.Connection == cl.ConnectTo)
-                {
-                    allConnections += cl.Asset.Inv_id + ", ";
-                }
-            }
+            IEnumerable<Asset> connected = db.Assets
+                .Where(c => c.Connection == asset.Inv_id);
+            foreach (Asset c in connected)
+                allConnections += c.Inv_id + ", ";
             ViewBag.Connections = allConnections.TrimEnd(' ').TrimEnd(',');
-            IEnumerable<ConnectionLog> conLog = asset.ConnectionLog;
+            
             return View(asset);
         }
 

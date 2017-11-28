@@ -39,20 +39,6 @@
     </dl>
 </div>
 <div class="row">
-    <table class="table table-striped">
-        @foreach (Assets_Inventory.Models.ConnectionLog cl in ViewBag.ConnectionsTmp)
-        {
-            <tr>
-                <td>@cl.Timestamp</td>
-                <td>@cl.AssetId</td>
-                <td>@cl.ConnectTo</td>
-                <td>@cl.UserName</td>
-                <td>@cl.Notes</td>
-            </tr>
-        }
-    </table>
-</div>
-<div class="row">
     <h3>История подключений</h3>
     <table class="table table-condensed">
         <tr>
